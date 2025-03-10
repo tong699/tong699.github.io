@@ -107,13 +107,12 @@
     </div>
   </div>
 
-  <!-- Chatbot Element (initially hidden) -->
-  <flowise-fullchatbot style="display:none;"></flowise-fullchatbot>
+  <!-- Placeholder for the Chatbot Element -->
+  <div id="chatbotContainer"></div>
 
   <script type="module">
     import Chatbot from "https://cdn.jsdelivr.net/npm/flowise-embed/dist/web.js";
 
-    // Listen for form submission
     document.getElementById('userForm').addEventListener('submit', function(e) {
       e.preventDefault();
       
@@ -123,20 +122,31 @@
 
       // Hide the modal popup
       document.getElementById('userModal').style.display = 'none';
+
+      // Remove any existing chatbot element to clear previous history
+      const existingChatbot = document.querySelector('flowise-fullchatbot');
+      if (existingChatbot) {
+        existingChatbot.remove();
+      }
       
-      // Show the chatbot element
-      document.querySelector('flowise-fullchatbot').style.display = 'block';
+      // Optionally clear any locally cached chat history (if Flowise uses localStorage)
+      // localStorage.removeItem('flowise-chat-history');
+
+      // Create a new chatbot element and add it to the container
+      const newChatbot = document.createElement('flowise-fullchatbot');
+      newChatbot.style.display = 'block';
+      document.getElementById('chatbotContainer').appendChild(newChatbot);
 
       // Initialize the chatbot with extra configuration data
       Chatbot.initFull({
         chatflowid: "ea607b64-1211-4e67-b212-f3fbfb4a4754",
         apiHost: "https://flowiseai-railway-production-c85e.up.railway.app",
         chatflowConfig: {
-          sessionId: username,  // You can generate or modify the session ID if needed
-            vars: {
-              "username": username,
-              "email": email
-            }
+          sessionId: username,  // Using username as the session ID for uniqueness
+          vars: {
+            username: username,
+            email: email
+          }
         }
       });
     });
