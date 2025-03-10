@@ -1,66 +1,145 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chatbot to Promote Healthy Lifestyle</title>
-    <style>
-        html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            font-family: Arial, sans-serif;
-        }
-
-        body {
-            background-image: url('your-image.jpg');
-            background-repeat: no-repeat;
-            background-size: cover;
-        }
-
-        .navbar {
-            background-color: #333;
-            display: flex;
-            justify-content: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;       
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-        }
-
-        .navbar a {
-            color: #f2f2f2;
-            padding: 14px 16px;
-            text-decoration: none;
-            font-family: 'Courier New', Courier, monospace;
-            transition: background-color 0.5s ease, color 0.5s ease, transform 0.5s ease;
-        }
-
-        .navbar a:hover {
-            background-color: #ddd;
-            color: red;            
-            transform: scale(1.1);
-        }
-
-        flowise-fullchatbot {
-            height: calc(100% - 50px);
-            width: 100%;
-            display: block;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chatbot to Promote Healthy Lifestyle</title>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+    }
+    
+    body {
+      background-image: url('your-image.jpg');
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+    
+    .navbar {
+      background-color: #333;
+      display: flex;
+      justify-content: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    }
+    
+    .navbar a {
+      color: #f2f2f2;
+      padding: 14px 16px;
+      text-decoration: none;
+      font-family: 'Courier New', Courier, monospace;
+      transition: background-color 0.5s ease, color 0.5s ease, transform 0.5s ease;
+    }
+    
+    .navbar a:hover {
+      background-color: #ddd;
+      color: red;
+      transform: scale(1.1);
+    }
+    
+    flowise-fullchatbot {
+      height: calc(100% - 50px);
+      width: 100%;
+      display: block;
+    }
+    
+    /* Modal styling */
+    .modal {
+      display: block; /* Modal is visible by default */
+      position: fixed;
+      z-index: 200; /* Higher than chatbot */
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+    
+    .modal-content {
+      background-color: #fefefe;
+      margin: 15% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 300px;
+      border-radius: 5px;
+    }
+    
+    .modal-content input {
+      width: 100%;
+      padding: 8px;
+      margin: 5px 0 10px 0;
+      box-sizing: border-box;
+    }
+    
+    .modal-content button {
+      width: 100%;
+      padding: 10px;
+      background-color: #333;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+    
+    .modal-content button:hover {
+      background-color: #555;
+    }
+  </style>
 </head>
 <body>
-<flowise-fullchatbot></flowise-fullchatbot>
-<script type="module">
-    import Chatbot from "https://cdn.jsdelivr.net/npm/flowise-embed/dist/web.js"
-    Chatbot.initFull({
+  <!-- Modal Popup for Username and Email -->
+  <div id="userModal" class="modal">
+    <div class="modal-content">
+      <h2>Enter your details</h2>
+      <form id="userForm">
+        <label for="username">Username:</label>
+        <input type="text" id="username" required>
+        <label for="email">Email:</label>
+        <input type="email" id="email" required>
+        <button type="submit">Start Chat</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Chatbot Element (initially hidden) -->
+  <flowise-fullchatbot style="display:none;"></flowise-fullchatbot>
+
+  <script type="module">
+    import Chatbot from "https://cdn.jsdelivr.net/npm/flowise-embed/dist/web.js";
+
+    // Listen for form submission
+    document.getElementById('userForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      // Retrieve values from the form
+      const username = document.getElementById('username').value;
+      const email = document.getElementById('email').value;
+
+      // Hide the modal popup
+      document.getElementById('userModal').style.display = 'none';
+      
+      // Show the chatbot element
+      document.querySelector('flowise-fullchatbot').style.display = 'block';
+
+      // Initialize the chatbot with extra configuration data
+      Chatbot.initFull({
         chatflowid: "ea607b64-1211-4e67-b212-f3fbfb4a4754",
         apiHost: "https://flowiseai-railway-production-c85e.up.railway.app",
         chatflowConfig: {
-            "sessionId": "123",
+          sessionId: username,  // You can generate or modify the session ID if needed
+            vars: {
+              "username": username,
+              "email": email
+            }
         }
-    })
-</script>
+      });
+    });
+  </script>
 </body>
 </html>
