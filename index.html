@@ -130,7 +130,7 @@
       }
       
       // Optionally clear any locally cached chat history (if Flowise uses localStorage)
-      // localStorage.removeItem('flowise-chat-history');
+      localStorage.removeItem('flowise-chat-history');
 
       // Create a new chatbot element and add it to the container
       const newChatbot = document.createElement('flowise-fullchatbot');
