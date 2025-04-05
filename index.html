@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Chatbot to Promote Healthy Lifestyle</title>
+
+  <!-- Firebase & Flowise Styling -->
   <style>
     html, body {
       height: 100%;
@@ -12,48 +14,17 @@
       overflow: hidden;
       font-family: Arial, sans-serif;
     }
-    
+
     body {
       background-image: url('your-image.jpg');
       background-repeat: no-repeat;
       background-size: cover;
     }
-    
-    .navbar {
-      background-color: #333;
-      display: flex;
-      justify-content: center;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-    }
-    
-    .navbar a {
-      color: #f2f2f2;
-      padding: 14px 16px;
-      text-decoration: none;
-      font-family: 'Courier New', Courier, monospace;
-      transition: background-color 0.5s ease, color 0.5s ease, transform 0.5s ease;
-    }
-    
-    .navbar a:hover {
-      background-color: #ddd;
-      color: red;
-      transform: scale(1.1);
-    }
-    
-    flowise-fullchatbot {
-      height: calc(100% - 50px);
-      width: 100%;
-      display: block;
-    }
-    
-    /* Modal styling */
+
     .modal {
-      display: block; /* Modal is visible by default */
+      display: block;
       position: fixed;
-      z-index: 200; /* Higher than chatbot */
+      z-index: 200;
       left: 0;
       top: 0;
       width: 100%;
@@ -61,7 +32,7 @@
       overflow: auto;
       background-color: rgba(0, 0, 0, 0.5);
     }
-    
+
     .modal-content {
       background-color: #fefefe;
       margin: 15% auto;
@@ -70,143 +41,209 @@
       width: 300px;
       border-radius: 5px;
     }
-    
-    .modal-content input {
+
+    .modal-content input,
+    .modal-content select {
       width: 100%;
       padding: 8px;
       margin: 5px 0 10px 0;
       box-sizing: border-box;
     }
-    
+
     .modal-content button {
       width: 100%;
       padding: 10px;
+      margin-top: 5px;
       background-color: #333;
       color: #fff;
       border: none;
       cursor: pointer;
     }
-    
+
     .modal-content button:hover {
       background-color: #555;
+    }
+
+    flowise-fullchatbot {
+      height: 100%;
+      width: 100%;
+      display: block;
     }
   </style>
 </head>
 <body>
-  <!-- Modal Popup for Username and Email -->
+
+  <!-- Login/Register Modal -->
   <div id="userModal" class="modal">
     <div class="modal-content">
-      <h2>Enter your details</h2>
-      <form id="userForm">
-        <label for="username">Username:</label>
-        <input type="text" id="username" required>
-        <label for="email">Email:</label>
-        <input type="email" id="email" required>
-        <label for="password">Password:</label>
-        <input type="password" id="password" required>
-        <button id="loginBtn" type="button">Login</button>
-        <button id="registerBtn" type="button">Register</button>
-      </form>
+      <h2>Login / Register</h2>
+      <label for="email">Email:</label>
+      <input type="email" id="email" required />
+      <label for="password">Password:</label>
+      <input type="password" id="password" required />
+      <button id="loginBtn" type="button">Login</button>
+      <button id="registerBtn" type="button">Register</button>
     </div>
   </div>
 
-  <!-- Placeholder for the Chatbot Element -->
+  <!-- Preferences Modal -->
+  <div id="preferencesModal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <h2>Set Your Preferences</h2>
+      <label for="moodSelect">Your Mood:</label>
+      <select id="moodSelect">
+        <option value="neutral">Neutral</option>
+        <option value="happy">Happy</option>
+        <option value="stressed">Stressed</option>
+        <option value="unmotivated">Unmotivated</option>
+      </select>
+
+      <label for="goalSelect">Your Goal:</label>
+      <select id="goalSelect">
+        <option value="healthy lifestyle">Healthy Lifestyle</option>
+        <option value="lose weight">Lose Weight</option>
+        <option value="gain muscle">Gain Muscle</option>
+        <option value="improve sleep">Improve Sleep</option>
+      </select>
+
+      <button id="savePreferencesBtn">Save & Continue</button>
+    </div>
+  </div>
+
+  <!-- Chatbot -->
   <div id="chatbotContainer"></div>
-<script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
 
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyDbr6j7NvPzIfM9bSpBVH2clyfu-yVZeSE",
-    authDomain: "iotp7-3ff5c.firebaseapp.com",
-    databaseURL: "https://iotp7-3ff5c-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "iotp7-3ff5c",
-    storageBucket: "iotp7-3ff5c.appspot.com",
-    messagingSenderId: "370001518325",
-    appId: "1:370001518325:web:88bd218007349d5c396fbc",
-    measurementId: "G-JH0LFPW092"
-  };
+  <!-- Firebase + Flowise Script -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+    import Chatbot from "https://cdn.jsdelivr.net/npm/flowise-embed/dist/web.js";
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-<script type="module">
-  import Chatbot from "https://cdn.jsdelivr.net/npm/flowise-embed/dist/web.js";
+    // Firebase Config (replace with your own)
+    const firebaseConfig = {
+      apiKey: "AIzaSyDbr6j7NvPzIfM9bSpBVH2clyfu-yVZeSE",
+      authDomain: "iotp7-3ff5c.firebaseapp.com",
+      databaseURL: "https://iotp7-3ff5c-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "iotp7-3ff5c",
+      storageBucket: "iotp7-3ff5c.appspot.com",
+      messagingSenderId: "370001518325",
+      appId: "1:370001518325:web:88bd218007349d5c396fbc",
+      measurementId: "G-JH0LFPW092"
+    };
 
-  const loginBtn = document.getElementById('loginBtn');
-  const registerBtn = document.getElementById('registerBtn');
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-  const showChatbot = async (user) => {
-    const username = user.email.split('@')[0];
+    // DOM references
+    const loginBtn = document.getElementById('loginBtn');
+    const registerBtn = document.getElementById('registerBtn');
+    const preferencesModal = document.getElementById('preferencesModal');
+    const moodSelect = document.getElementById('moodSelect');
+    const goalSelect = document.getElementById('goalSelect');
+    const savePreferencesBtn = document.getElementById('savePreferencesBtn');
+    let cachedUser = null;
 
-    // Save preferences in Firestore (if needed)
-    const userDoc = db.collection("users").doc(user.uid);
-    await userDoc.set({
-      email: user.email,
-      username: username,
-      preferences: {
-        mood: "neutral",
-        goal: "healthy lifestyle"
-      }
-    }, { merge: true });
+    const showChatbot = async (user, mood, goal) => {
+      const username = user.email.split('@')[0];
+      document.getElementById('userModal').style.display = 'none';
+      preferencesModal.style.display = 'none';
 
-    // Hide modal
-    document.getElementById('userModal').style.display = 'none';
+      // Remove existing chatbot
+      const existingChatbot = document.querySelector('flowise-fullchatbot');
+      if (existingChatbot) existingChatbot.remove();
+      localStorage.removeItem('ea607b64-1211-4e67-b212-f3fbfb4a4754_EXTERNAL');
 
-    // Remove previous chatbot
-    const existingChatbot = document.querySelector('flowise-fullchatbot');
-    if (existingChatbot) existingChatbot.remove();
-    localStorage.removeItem('ea607b64-1211-4e67-b212-f3fbfb4a4754_EXTERNAL');
+      const newChatbot = document.createElement('flowise-fullchatbot');
+      newChatbot.style.display = 'block';
+      document.getElementById('chatbotContainer').appendChild(newChatbot);
 
-    // Launch chatbot
-    const newChatbot = document.createElement('flowise-fullchatbot');
-    newChatbot.style.display = 'block';
-    document.getElementById('chatbotContainer').appendChild(newChatbot);
-
-    Chatbot.initFull({
-      chatflowid: "ea607b64-1211-4e67-b212-f3fbfb4a4754",
-      apiHost: "https://flowiseai-railway-production-c85e.up.railway.app",
-      chatflowConfig: {
-        sessionId: username,
-        vars: {
-          username: username,
-          email: user.email
+      Chatbot.initFull({
+        chatflowid: "ea607b64-1211-4e67-b212-f3fbfb4a4754",
+        apiHost: "https://flowiseai-railway-production-c85e.up.railway.app",
+        chatflowConfig: {
+          sessionId: username,
+          vars: {
+            username,
+            email: user.email,
+            mood,
+            goal
+          }
         }
+      });
+    };
+
+    const loadPreferences = async (user) => {
+      cachedUser = user;
+      const userDocRef = doc(db, "users", user.uid);
+      let mood = "neutral";
+      let goal = "healthy lifestyle";
+
+      try {
+        const docSnap = await getDoc(userDocRef);
+        if (docSnap.exists()) {
+          const prefs = docSnap.data().preferences || {};
+          mood = prefs.mood || mood;
+          goal = prefs.goal || goal;
+        } else {
+          await setDoc(userDocRef, {
+            email: user.email,
+            username: user.email.split('@')[0],
+            preferences: { mood, goal }
+          });
+        }
+
+        // Show preference modal
+        moodSelect.value = mood;
+        goalSelect.value = goal;
+        preferencesModal.style.display = 'block';
+
+      } catch (err) {
+        alert("Failed to load preferences: " + err.message);
+      }
+    };
+
+    savePreferencesBtn.addEventListener('click', async () => {
+      const mood = moodSelect.value;
+      const goal = goalSelect.value;
+
+      if (!cachedUser) return alert("User not found");
+
+      try {
+        await setDoc(doc(db, "users", cachedUser.uid), {
+          preferences: { mood, goal }
+        }, { merge: true });
+
+        showChatbot(cachedUser, mood, goal);
+      } catch (err) {
+        alert("Failed to save preferences: " + err.message);
       }
     });
-  };
 
-  loginBtn.addEventListener('click', async () => {
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
+    loginBtn.addEventListener('click', async () => {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        loadPreferences(userCredential.user);
+      } catch (err) {
+        alert("Login failed: " + err.message);
+      }
+    });
 
-    try {
-      const userCredential = await auth.signInWithEmailAndPassword(email, password);
-      showChatbot(userCredential.user);
-    } catch (err) {
-      alert("Login error: " + err.message);
-    }
-  });
+    registerBtn.addEventListener('click', async () => {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        loadPreferences(userCredential.user);
+      } catch (err) {
+        alert("Registration failed: " + err.message);
+      }
+    });
+  </script>
 
-  registerBtn.addEventListener('click', async () => {
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-
-    try {
-      const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-      showChatbot(userCredential.user);
-    } catch (err) {
-      alert("Registration error: " + err.message);
-    }
-  });
-</script>
-
-
-  
 </body>
 </html>
