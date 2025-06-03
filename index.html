@@ -1,249 +1,231 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Chatbot to Promote Healthy Lifestyle</title>
-
-  <!-- Firebase & Flowise Styling -->
+  <meta charset="UTF-8">
+  <title>Tong Chun Mun | Portfolio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    html, body {
-      height: 100%;
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-      font-family: Arial, sans-serif;
-    }
-
-    body {
-      background-image: url('your-image.jpg');
-      background-repeat: no-repeat;
-      background-size: cover;
-    }
-
-    .modal {
-      display: block;
-      position: fixed;
-      z-index: 200;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: rgba(0, 0, 0, 0.5);
-    }
-
-    .modal-content {
-      background-color: #fefefe;
-      margin: 15% auto;
-      padding: 20px;
-      border: 1px solid #888;
-      width: 300px;
-      border-radius: 5px;
-    }
-
-    .modal-content input,
-    .modal-content select {
-      width: 100%;
-      padding: 8px;
-      margin: 5px 0 10px 0;
-      box-sizing: border-box;
-    }
-
-    .modal-content button {
-      width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      background-color: #333;
+    body { background: #f8fafc; color: #1e293b; }
+    .hero {
+      background: linear-gradient(120deg,#0ea5e9 70%,#1e293b 100%);
       color: #fff;
+      padding: 64px 0 40px 0;
+      box-shadow: 0 2px 18px 0 rgba(14,165,233,0.13);
+    }
+    .hero h1 { font-size: 3rem; }
+    .avatar { width: 130px; border-radius: 50%; margin-bottom: 12px; border: 4px solid #38bdf8; box-shadow: 0 2px 12px rgba(30,41,59,0.09);}
+    .section-title {
+      border-left: 4px solid #0ea5e9;
+      padding-left: 10px;
+      margin-bottom: 18px;
+      font-weight: 600;
+      letter-spacing: .5px;
+    }
+    .project-card {
+      box-shadow: 0 2px 14px rgba(14,165,233,0.07);
       border: none;
+      transition: transform 0.12s, box-shadow 0.12s;
       cursor: pointer;
     }
-
-    .modal-content button:hover {
-      background-color: #555;
+    .project-card:hover {
+      transform: translateY(-6px) scale(1.025);
+      box-shadow: 0 6px 30px 0 rgba(14,165,233,0.17);
+      background: #f0faff;
     }
-
-    flowise-fullchatbot {
+    .badge {
+      background: #0ea5e9;
+      font-size: .8em;
+      margin-right: 5px;
+    }
+    .timeline {
+      position: relative;
+      margin-left: 10px;
+      margin-bottom: 28px;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 6px;
+      top: 0;
       height: 100%;
-      width: 100%;
-      display: block;
+      width: 2px;
+      background: #0ea5e9;
+      opacity: 0.3;
+    }
+    .timeline-item {
+      margin-bottom: 18px;
+      position: relative;
+    }
+    .timeline-dot {
+      width: 13px; height: 13px;
+      background: #0ea5e9;
+      border-radius: 50%;
+      position: absolute;
+      left: -4px;
+      top: 3px;
+      border: 3px solid #e0f2fe;
+      z-index: 1;
+    }
+    .timeline-content {
+      margin-left: 24px;
+      padding-bottom: 2px;
+    }
+    .section-bg {
+      background: #f0faff;
+      border-radius: 12px;
+      padding: 28px 20px;
+      margin-bottom: 32px;
+      box-shadow: 0 1px 6px 0 rgba(14,165,233,0.05);
+    }
+    a { color: #0ea5e9; }
+    a:hover { text-decoration: underline; }
+    footer {
+      background: #1e293b;
+      color: #cbd5e1;
+      padding: 22px 0 10px 0;
+      font-size: 1em;
+      text-align: center;
+      margin-top: 38px;
+    }
+    .contact-list li { margin-bottom: 4px; }
+    @media (max-width: 600px) {
+      .hero h1 { font-size: 2.1rem; }
+      .section-bg { padding: 18px 6px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Login/Register Modal -->
-  <div id="userModal" class="modal">
-    <div class="modal-content">
-      <h2>Login / Register</h2>
-      <label for="email">Email:</label>
-      <input type="email" id="email" required />
-      <label for="password">Password:</label>
-      <input type="password" id="password" required />
-      <button id="loginBtn" type="button">Login</button>
-      <button id="registerBtn" type="button">Register</button>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="#">Tong Chun Mun</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+        <li class="nav-item"><a class="nav-link" href="#skills">Skills</a></li>
+        <li class="nav-item"><a class="nav-link" href="#projects">Projects</a></li>
+        <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+      </ul>
     </div>
   </div>
+</nav>
 
-  <!-- Preferences Modal -->
-  <div id="preferencesModal" class="modal" style="display:none;">
-    <div class="modal-content">
-      <h2>Set Your Preferences</h2>
-      <label for="moodSelect">Your Mood:</label>
-      <select id="moodSelect">
-        <option value="neutral">Neutral</option>
-        <option value="happy">Happy</option>
-        <option value="stressed">Stressed</option>
-        <option value="unmotivated">Unmotivated</option>
-      </select>
+<!-- Hero -->
+<section class="hero text-center">
+  <div class="container">
+    <!-- <img src="your-photo.jpg" alt="Avatar" class="avatar mb-2"> Uncomment & add your photo -->
+    <h1 class="fw-bold mb-2">Tong Chun Mun</h1>
+    <p class="lead mb-3">Data Science Student & Aspiring Web Developer</p>
+    <div class="contact-info mb-2">
+      <span class="me-2">📍 Kuala Lumpur, Malaysia</span>
+      <span class="me-2">| <a href="mailto:cmtong123@gmail.com" style="color: #f0faff;">cmtong123@gmail.com</a></span>
+      <span class="me-2">| <a href="https://github.com/tong699" target="_blank" style="color: #f0faff;">GitHub</a></span>
+    </div>
+    <small>Internship Period: 23/06/2025 - 07/12/2025</small>
+  </div>
+</section>
 
-      <label for="goalSelect">Your Goal:</label>
-      <select id="goalSelect">
-        <option value="healthy lifestyle">Healthy Lifestyle</option>
-        <option value="lose weight">Lose Weight</option>
-        <option value="gain muscle">Gain Muscle</option>
-        <option value="improve sleep">Improve Sleep</option>
-      </select>
-
-      <button id="savePreferencesBtn">Save & Continue</button>
+<!-- About Section -->
+<section class="container section-bg mt-5" id="about">
+  <h2 class="section-title">About Me</h2>
+  <p>
+    Hi! I'm Chun Mun, a passionate Data Science student at TARUMT. I love building solutions that combine analytics, programming, and creativity—from AI chatbots to web tools. I'm currently seeking an internship where I can apply my technical skills and eagerness to learn in real-world projects, especially in web development and data-driven applications.
+  </p>
+  <div class="timeline">
+    <div class="timeline-item">
+      <span class="timeline-dot"></span>
+      <div class="timeline-content">
+        <strong>Bachelor's Degree in Data Science</strong> — Tunku Abdul Rahman University of Management and Technology (TARUMT)<br>
+        <small>Nov 2022 – Dec 2025</small>
+      </div>
     </div>
   </div>
+</section>
 
-  <!-- Chatbot -->
-  <div id="chatbotContainer"></div>
+<!-- Skills Section -->
+<section class="container section-bg" id="skills">
+  <h2 class="section-title">Skills</h2>
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <h6 class="fw-semibold">Programming & Web</h6>
+      <ul>
+        <li><span class="badge">HTML5</span><span class="badge">CSS3</span><span class="badge">JavaScript</span> <span class="badge bg-secondary">Bootstrap</span></li>
+        <li><span class="badge bg-secondary">C++</span> <span class="badge bg-secondary">Python</span> <span class="badge bg-secondary">Java</span> <span class="badge bg-secondary">R</span> <span class="badge bg-secondary">SQL</span> <span class="badge bg-secondary">Dart (Flutter)</span></li>
+        <li>WordPress (basic)</li>
+      </ul>
+    </div>
+    <div class="col-md-6 mb-3">
+      <h6 class="fw-semibold">Data, AI & Tools</h6>
+      <ul>
+        <li><span class="badge bg-info">TensorFlow</span> <span class="badge bg-info">PyTorch</span> <span class="badge bg-info">Scikit-learn</span> <span class="badge bg-info">OpenCV</span></li>
+        <li><span class="badge bg-success">Pandas</span> <span class="badge bg-success">Matplotlib</span> <span class="badge bg-success">Seaborn</span></li>
+        <li>FastAPI, Streamlit, Flutter</li>
+        <li>Oracle, Firebase, MongoDB, Chroma DB, Pinecone</li>
+        <li>Git, Docker, AWS, Hadoop, Spark</li>
+      </ul>
+    </div>
+  </div>
+</section>
 
-  <!-- Firebase + Flowise Script -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
-    import Chatbot from "https://cdn.jsdelivr.net/npm/flowise-embed/dist/web.js";
+<!-- Projects Section -->
+<section class="container section-bg" id="projects">
+  <h2 class="section-title">Projects</h2>
+  <div class="row g-4">
+    <div class="col-md-6">
+      <div class="card project-card p-3 h-100">
+        <h5 class="mb-2">Chatbot for Healthy Lifestyle</h5>
+        <span class="badge">Python</span> <span class="badge bg-secondary">Flowise</span> <span class="badge bg-secondary">Gemini API</span>
+        <p class="mt-2 mb-2">Developed an AI chatbot that gives personalized health advice using LLMs and reinforcement learning.</p>
+        <!-- <a href="#" class="link-primary" target="_blank">View Code</a> -->
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card project-card p-3 h-100">
+        <h5 class="mb-2">Medical Digital Watermarking</h5>
+        <span class="badge">Python</span> <span class="badge bg-secondary">OpenCV</span>
+        <p class="mt-2 mb-2">Designed a scheme to securely embed patient info in knee X-ray images for healthcare data protection.</p>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card project-card p-3 h-100">
+        <h5 class="mb-2">PDF-based Conversational AI</h5>
+        <span class="badge">Python</span> <span class="badge bg-secondary">LangChain</span> <span class="badge bg-secondary">Gradio</span>
+        <p class="mt-2 mb-2">Built a chatbot that answers queries from PDF documents using modern NLP frameworks.</p>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card project-card p-3 h-100">
+        <h5 class="mb-2">Wine Clustering (Unsupervised ML)</h5>
+        <span class="badge">Python</span> <span class="badge bg-secondary">BIRCH</span> <span class="badge bg-secondary">GMM</span>
+        <p class="mt-2 mb-2">Clustered wine datasets to discover insights using BIRCH, GMM, and other ML algorithms.</p>
+      </div>
+    </div>
+    <!-- Add more projects if needed -->
+  </div>
+</section>
 
-    // Firebase Config (replace with your own)
-    const firebaseConfig = {
-      apiKey: "AIzaSyDbr6j7NvPzIfM9bSpBVH2clyfu-yVZeSE",
-      authDomain: "iotp7-3ff5c.firebaseapp.com",
-      databaseURL: "https://iotp7-3ff5c-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "iotp7-3ff5c",
-      storageBucket: "iotp7-3ff5c.appspot.com",
-      messagingSenderId: "370001518325",
-      appId: "1:370001518325:web:88bd218007349d5c396fbc",
-      measurementId: "G-JH0LFPW092"
-    };
+<!-- Contact Section -->
+<section class="container section-bg" id="contact">
+  <h2 class="section-title">Contact</h2>
+  <ul class="contact-list">
+    <li><strong>Email:</strong> <a href="mailto:cmtong123@gmail.com">cmtong123@gmail.com</a></li>
+    <li><strong>Phone:</strong> +60 11-3372 8112</li>
+    <li><strong>GitHub:</strong> <a href="https://github.com/tong699" target="_blank">github.com/tong699</a></li>
+  </ul>
+  <p class="mt-3">Interested in collaborating or have an opportunity? Reach out anytime!</p>
+</section>
 
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+<footer>
+  &copy; 2025 Tong Chun Mun. All rights reserved.
+</footer>
 
-    // DOM references
-    const loginBtn = document.getElementById('loginBtn');
-    const registerBtn = document.getElementById('registerBtn');
-    const preferencesModal = document.getElementById('preferencesModal');
-    const moodSelect = document.getElementById('moodSelect');
-    const goalSelect = document.getElementById('goalSelect');
-    const savePreferencesBtn = document.getElementById('savePreferencesBtn');
-    let cachedUser = null;
-
-    const showChatbot = async (user, mood, goal) => {
-      const username = user.email.split('@')[0];
-      document.getElementById('userModal').style.display = 'none';
-      preferencesModal.style.display = 'none';
-
-      // Remove existing chatbot
-      const existingChatbot = document.querySelector('flowise-fullchatbot');
-      if (existingChatbot) existingChatbot.remove();
-      localStorage.removeItem('ea607b64-1211-4e67-b212-f3fbfb4a4754_EXTERNAL');
-
-      const newChatbot = document.createElement('flowise-fullchatbot');
-      newChatbot.style.display = 'block';
-      document.getElementById('chatbotContainer').appendChild(newChatbot);
-
-      Chatbot.initFull({
-        chatflowid: "30ff8574-4b92-41b8-840e-d12b4ad05308",
-        apiHost: "https://flowise-zvhg.onrender.com",
-        chatflowConfig: {
-          sessionId: username,
-          vars: {
-            username,
-            email: user.email,
-            mood,
-            goal
-          }
-        }
-      });
-    };
-
-    const loadPreferences = async (user) => {
-      cachedUser = user;
-      const userDocRef = doc(db, "users", user.uid);
-      let mood = "neutral";
-      let goal = "healthy lifestyle";
-
-      try {
-        const docSnap = await getDoc(userDocRef);
-        if (docSnap.exists()) {
-          const prefs = docSnap.data().preferences || {};
-          mood = prefs.mood || mood;
-          goal = prefs.goal || goal;
-        } else {
-          await setDoc(userDocRef, {
-            email: user.email,
-            username: user.email.split('@')[0],
-            preferences: { mood, goal }
-          });
-        }
-
-        // Show preference modal
-        moodSelect.value = mood;
-        goalSelect.value = goal;
-        preferencesModal.style.display = 'block';
-
-      } catch (err) {
-        alert("Failed to load preferences: " + err.message);
-      }
-    };
-
-    savePreferencesBtn.addEventListener('click', async () => {
-      const mood = moodSelect.value;
-      const goal = goalSelect.value;
-
-      if (!cachedUser) return alert("User not found");
-
-      try {
-        await setDoc(doc(db, "users", cachedUser.uid), {
-          preferences: { mood, goal }
-        }, { merge: true });
-
-        showChatbot(cachedUser, mood, goal);
-      } catch (err) {
-        alert("Failed to save preferences: " + err.message);
-      }
-    });
-
-    loginBtn.addEventListener('click', async () => {
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        loadPreferences(userCredential.user);
-      } catch (err) {
-        alert("Login failed: " + err.message);
-      }
-    });
-
-    registerBtn.addEventListener('click', async () => {
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        loadPreferences(userCredential.user);
-      } catch (err) {
-        alert("Registration failed: " + err.message);
-      }
-    });
-  </script>
-
+<!-- Bootstrap Bundle JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
